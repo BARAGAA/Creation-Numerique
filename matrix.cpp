@@ -459,62 +459,96 @@ bool        SolveSystemGauss        (double *x, double *A, double *b, uint64_t n
 }
 
 
+/*
+Performs LU Decompostion to square matrix A dimensioned n*n.
+*/
+bool decompLU(double *A, uint64_t n){
+    for (int i =0 ;i < n*n ; i +=(n+1)){ //  passer à la pivot suivant
+      
+        if(A[i] == 0) {
 
-bool LU_Decomposition(double *A, uint64_t n){
-  for (int i =0 ;i < n*n ; i +=(n+1)){ //  passer à la pivot suivant
-      if(A[i] == 0)
-        return false;
+          return false;
 
-      for(int l =i+n ; l <(n*n) ; l+=n){
-        double sousPivot =A[l]; //les elems sous le pivot
-        int lineEnd = n - (l%n); //dernier dans la ligne
-        A[l] =A[l]/A[i]; // le coéf stocké 
-        for (int s = 0 ; s <lineEnd ; s++){
-          A[l+s] -=(sousPivot/A[i]*A[i+s]); //Echangement des valeures dessous le pivot  pour fourmer la matrice (upper treiangle).
+        } else { 
+
+          for(int l =i+n ; l <(n*n) ; l+=n){
+
+            double sousPivot =A[l]/A[i]; //les elems sous le pivot
+            A[l] = sousPivot; //we put the coefficient (value assigned to sousPivot) as a replacement of zeros under each pivot.
+            int lineEnd = n - (l%n); //dernier dans la ligne
+            for (int s = 1 ; s <lineEnd ; s++){
+              A[l+s] -=(sousPivot*A[i+s]); //Echangement des valeures dessous le pivot  pour fourmer la matrice (upper treiangle).
+            }
+
+          }
+
         }
-    }
-  }
-  return true;
+
+      } 
+
+ return true;
+
 }
 
+
+/*
+ Calculation of the determinant of a square matrix A dimensioned n*n
+*/
 double det(double *A,uint64_t n){
-  if (LU_Decomposition(A,n)){
-  double d =1;
-    for(int i =0; i<= n*n ;i+= (n + 1))
+  if (decompLU(A,n))
+  {
+    double d =1;
+    for(int i =0; i<= n ;i+= (n + 1)){
       d *= A[i];
-
-  return d;
+    }
+    return d;
   }
-  return 0;
 }
 
-bool SolveLU(double *x, double *A, double *b, uint64_t n){
-  if(LU_Decomposition(A,n)){
-    double *L = allocateMatrix(n,n);
-    double *U = allocateMatrix(n,n);
-    for( int i = 0 ;i <n*n ;i+=(n+1) )
-      L[i] =1;
 
-    for(int i=0 ;i<n ;i++){ 
-      for(int j=0 ;j<i ;j++){
-      L[(i*n)+j] =A[(i*n)+j];
+/*
+Solves a system of linear equations Ax=b, given a matrix A (size n x n) and vector b(size n)
+Using LU factorisation algorithm.
+*/
+bool  SolveSystemLU_Decomp  (double *x, double *A, double *b, uint64_t n){ 
+
+  bool valid = decompLU(A,n);
+
+  if(valid){
+    double * L = allocateMatrix(n,n) ;
+    double * U = allocateMatrix(n,n) ;
+
+    for(int i = 0 ; i < n ; i++){
+      for(int j = 0 ; j < n ; j++){ 
+        if(i <= j){
+          U[i * n + j] = A[i * n + j];
+          if(i == j){
+            L[i * n + j] = 1;
+          }
+        }else{
+          L[i * n + j] = A[i * n + j];
+        }
+
       }
     }
-    for(int i=0 ;i<n ;i++){ 
-      for(int j=(i+1) ;j <n ;j++){
-        U[(i*n)+j] = A[i*n +j];
-      }
-    }
 
-    Triangularize(L,b,n);
+    valid = Triangularize(L,b,n);
+
+    if (valid){
+      SolveTriangularSystemUP(x,U,b,n);
+    }
+    
     freeMatrix(L);
-
-    SolveTriangularSystemUP(x,U,b,n);
     freeMatrix(U);
-    return true;
+    
+    return valid;
+    
+  } else { 
 
-
-  }else {
     return false;
+
   }
+
 }
+
+

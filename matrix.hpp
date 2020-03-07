@@ -21,6 +21,22 @@ void        matrixAdd           (double *S, double *A, double *B, uint64_t n, ui
 
 /* Rajouter les prototypes de vos méthodes ici. Par exemple */
 
+
+/*
+Solves a system of linear equations Ax=b, given a matrix A (size n x n) and vector b(size n)
+Using LU factorisation algorithm.
+*/
+bool  SolveSystemLU_Decomp   (double *x, double *A, double *b, uint64_t n);
+
+/*
+ Calculation of the determinant of a square matrix A dimensioned n*n
+*/
+double det(double *A,uint64_t n);
+
+/*
+Performs LU Decompostion to square matrix A dimensioned n*n.
+*/
+bool decompLU(double *A, uint64_t n);
 /* Performs naive multiplication of matrix A (size p x k) by a matrix B (size k x r).
 The result matrix S = A*B  is of size (k x r).
 We assume that S has already been allocated outside the function.
