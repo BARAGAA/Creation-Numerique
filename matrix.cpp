@@ -468,6 +468,7 @@ bool LU_Decomposition(double *A, uint64_t n){
       for(int l =i+n ; l <(n*n) ; l+=n){
         double sousPivot =A[l]; //les elems sous le pivot
         int lineEnd = n - (l%n); //dernier dans la ligne
+        A[l] =A[l]/A[i]; // le coéf stocké 
         for (int s = 0 ; s <lineEnd ; s++){
           A[l+s] -=(sousPivot/A[i]*A[i+s]); //Echangement des valeures dessous le pivot  pour fourmer la matrice (upper treiangle).
         }
@@ -477,12 +478,43 @@ bool LU_Decomposition(double *A, uint64_t n){
 }
 
 double det(double *A,uint64_t n){
-  if (LU_Decomposition(A,n))
-  {
+  if (LU_Decomposition(A,n)){
   double d =1;
-  for(int i =0; i<= n ;i+= (n + 1))
-    d *= A[i];
-  return d;
-}
-return 0;
+    for(int i =0; i<= n*n ;i+= (n + 1))
+      d *= A[i];
 
+  return d;
+  }
+  return 0;
+}
+
+bool SolveLU(double *x, double *A, double *b, uint64_t n){
+  if(LU_Decomposition(A,n)){
+    double *L = allocateMatrix(n,n);
+    double *U = allocateMatrix(n,n);
+    for( int i = 0 ;i <n*n ;i+=(n+1) )
+      L[i] =1;
+
+    for(int i=0 ;i<n ;i++){ 
+      for(int j=0 ;j<i ;j++){
+      L[(i*n)+j] =A[(i*n)+j];
+      }
+    }
+    for(int i=0 ;i<n ;i++){ 
+      for(int j=(i+1) ;j <n ;j++){
+        U[(i*n)+j] = A[i*n +j];
+      }
+    }
+
+    Triangularize(L,b,n);
+    freeMatrix(L);
+
+    SolveTriangularSystemUP(x,U,b,n);
+    freeMatrix(U);
+    return true;
+
+
+  }else {
+    return false;
+  }
+}
