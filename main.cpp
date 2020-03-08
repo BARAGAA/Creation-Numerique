@@ -25,9 +25,10 @@ int main(int argc, char** argv){
         // cout << "resultat obtenu:" << endl;
         // writeMatrix(stdout,A,3,3);
 
-        // cout << "test: det" << endl; 
-        // double A [] = {1,1,1,4,3,-1,3,5,3};
-        // cout << "the determinant is " << det(A,3) << endl;
+        //cout << "test: det" << endl; 
+        //cout << "résultat attendu: 10 " << endl; 
+        //double A [] = {1,1,1,4,3,-1,3,5,3};
+        //cout << "the determinant is " << det(A,3) << endl;
 
         // cout << "Test: SolveSystemLU_Decomp " << endl;
         //     double A [] = {10,7,8,7,7,5,6,5,8,6,10,9,7,5,9,10};
@@ -37,13 +38,13 @@ int main(int argc, char** argv){
         // cout << "resultat obtenu:" << endl; 
         //     writeMatrix(stdout, x, 4, 1);
 
-        // cout << "résultat attendu from Ax=b2" << endl; 
-        //     double A [] = {10,7,8,7,7,5,6,5,8,6,10,9,7,5,9,10};
-        //     double b2 [] = {32.1,22.9,33.1,30.9};
-        //     double x [] = {0,0,0,0};
-        //     SolveSystemLU_Decomp(x,A,b2,4); 
-        // cout << "resultat obtenu:" << endl; 
-        //     writeMatrix(stdout, x, 4, 1);
+        //cout << "résultat attendu de Ax=b2" << endl; 
+        //    double A [] = {10,7,8,7,7,5,6,5,8,6,10,9,7,5,9,10};
+        //    double b2 [] = {32.1,22.9,33.1,30.9};
+        //    double x [] = {0,0,0,0};
+        //    SolveSystemLU_Decomp(x,A,b2,4); 
+        //cout << "resultat obtenu:" << endl; 
+        //    writeMatrix(stdout, x, 4, 1);
 
         // cout << "Test: SolveSystemLU_Decomp " << endl;
         //     double B [] = {1,7,2,1,7,5,1,5,8,6,10,9,7,5,9,1};

@@ -460,34 +460,23 @@ bool        SolveSystemGauss        (double *x, double *A, double *b, uint64_t n
 
 
 /*
-Performs LU Decompostion to square matrix A dimensioned n*n.
+faire la decomposition LU Decompostion pour une matrice carré de dimention n*n.
 */
 bool decompLU(double *A, uint64_t n){
-    for (int i =0 ;i < n*n ; i +=(n+1)){ //  passer à la pivot suivant
-      
-        if(A[i] == 0) {
+  for (int i =0 ;i < n*n ; i +=(n+1)){ //  passer à la pivot suivant
+    if(A[i] == 0) 
+      return false;
 
-          return false;
-
-        } else { 
-
-          for(int l =i+n ; l <(n*n) ; l+=n){
-
-            double sousPivot =A[l]/A[i]; //les elems sous le pivot
-            A[l] = sousPivot; //we put the coefficient (value assigned to sousPivot) as a replacement of zeros under each pivot.
-            int lineEnd = n - (l%n); //dernier dans la ligne
-            for (int s = 1 ; s <lineEnd ; s++){
-              A[l+s] -=(sousPivot*A[i+s]); //Echangement des valeures dessous le pivot  pour fourmer la matrice (upper treiangle).
-            }
-
-          }
-
-        }
-
-      } 
-
- return true;
-
+    for(int l =i+n ; l <(n*n) ; l+=n){
+      double sousPivot =A[l]/A[i]; //les elems sous le pivot
+      A[l] = sousPivot; //le coefficient (la valeur de sous pivot) dans le triangle qui consiste de zeros.
+      int lineEnd = n - (l%n); //dernier dans la ligne
+      for (int s = 1 ; s <lineEnd ; s++){
+        A[l+s] -=(sousPivot*A[i+s]); //Echangement des valeures dessous le pivot  pour fourmer la matrice (upper treiangle).
+      }
+    }
+  }
+  return true;
 }
 
 
@@ -495,20 +484,20 @@ bool decompLU(double *A, uint64_t n){
  Calculation of the determinant of a square matrix A dimensioned n*n
 */
 double det(double *A,uint64_t n){
-  if (decompLU(A,n))
-  {
+  if (decompLU(A,n)){
     double d =1;
-    for(int i =0; i<= n ;i+= (n + 1)){
-      d *= A[i];
+    for(int i =0; i<= n*n ;i+= (n + 1)){
+      d = d* A[i];
     }
     return d;
   }
+  return 0;
 }
 
 
 /*
-Solves a system of linear equations Ax=b, given a matrix A (size n x n) and vector b(size n)
-Using LU factorisation algorithm.
+résoudre le système linéaire  de la matrice A et le  vecteur b
+en utilisant LU décomposition.
 */
 bool  SolveSystemLU_Decomp  (double *x, double *A, double *b, uint64_t n){ 
 
@@ -521,14 +510,13 @@ bool  SolveSystemLU_Decomp  (double *x, double *A, double *b, uint64_t n){
     for(int i = 0 ; i < n ; i++){
       for(int j = 0 ; j < n ; j++){ 
         if(i <= j){
-          U[i * n + j] = A[i * n + j];
+          U[i*n + j] = A[i*n + j];
           if(i == j){
-            L[i * n + j] = 1;
+            L[i*n + j] = 1;
           }
         }else{
-          L[i * n + j] = A[i * n + j];
+          L[i*n + j] = A[i*n + j];
         }
-
       }
     }
 
